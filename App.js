@@ -1,15 +1,81 @@
 import { StatusBar } from 'expo-status-bar';
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { useState } from 'react';
+import { StyleSheet, View, FlatList, Button } from 'react-native';
+
+import GoalInput from './components/GoalInput';
+import GoalItem from './components/GoalItem';
 
 export default function App() {
+  const [modalVisible, setModalIsVisible] = useState(false);
+  const [courseGoals, setCourseGoals] = useState([]);
+
+  function startAddGoalHandler() {
+    setModalIsVisible(true);
+  }
+  function endAddGoalHandler() {
+    setModalIsVisible(false);
+  }
+
+  function addINputHandler(enteredGoalText) {
+    setCourseGoals(currentCourseGoals => [
+      ...currentCourseGoals,
+      { text: enteredGoalText, id: Math.random().toString() },
+    ]);
+    endAddGoalHandler();
+  }
+
+  function deleteGoalHandler(id) {
+    setCourseGoals(currentCourseGoals => {
+      return currentCourseGoals.filter(goal => goal.id !== id);
+    });
+  }
+
   return (
-    <View>
-      <View></View>
-      <View></View>
-    </View>
+    <>
+      <StatusBar style='auto' />
+      <View style={styles.addContainer}>
+        <Button
+          title='Add New Goal'
+          color='#5e0acc'
+          onPress={startAddGoalHandler}
+        />
+        <GoalInput
+          onAddGoal={addINputHandler}
+          visible={modalVisible}
+          onCancel={endAddGoalHandler}
+        />
+        <View style={styles.goalsContainer}>
+          <FlatList
+            data={courseGoals}
+            renderItem={itemData => {
+              return (
+                <GoalItem
+                  text={itemData.item.text}
+                  onDeleteItem={deleteGoalHandler}
+                  id={itemData.item.id}
+                />
+              );
+            }}
+            keyExtractor={(item, index) => {
+              return item.id;
+            }}
+          />
+        </View>
+      </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
- 
+  addContainer: {
+    flex: 1,
+    padding: 50,
+    paddingHorizontal: 16,
+    backgroundColor: 'mediumturquoise',
+    flexDirection: 'column-reverse',
+  },
+
+  goalsContainer: {
+    flex: 5,
+  },
 });
