@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import React, { useState } from 'react';
 
-export default function GoalInput({ value, onAddGoal, visible, onCancel }) {
+export default function GoalInput({ onAddGoal, visible, onCancel }) {
   const [enteredGoalText, setEneteredGoalText] = useState('');
 
   function goalINputHandler(entredText) {

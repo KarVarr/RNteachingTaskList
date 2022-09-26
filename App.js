@@ -1,9 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
-import { StyleSheet, View, FlatList, Button } from 'react-native';
+import { StyleSheet, View, FlatList, Button, Text, Image } from 'react-native';
+
 
 import GoalInput from './components/GoalInput';
 import GoalItem from './components/GoalItem';
+
+
+
+
 
 export default function App() {
   const [modalVisible, setModalIsVisible] = useState(false);
@@ -29,7 +34,6 @@ export default function App() {
       return currentCourseGoals.filter(goal => goal.id !== id);
     });
   }
-
   return (
     <>
       <StatusBar style='auto' />
@@ -44,23 +48,30 @@ export default function App() {
           visible={modalVisible}
           onCancel={endAddGoalHandler}
         />
-        <View style={styles.goalsContainer}>
-          <FlatList
-            data={courseGoals}
-            renderItem={itemData => {
-              return (
-                <GoalItem
-                  text={itemData.item.text}
-                  onDeleteItem={deleteGoalHandler}
-                  id={itemData.item.id}
-                />
-              );
-            }}
-            keyExtractor={(item, index) => {
-              return item.id;
-            }}
-          />
-        </View>
+        {courseGoals == '' ? (
+          <View style={styles.empty}>
+            <Text style={styles.emptyText}>Make a Note...</Text>
+            <Image style={styles.emptyimg} source={require('./assets/images/feather.png')}  />
+          </View>
+        ) : (
+          <View style={styles.goalsContainer}>
+            <FlatList
+              data={courseGoals}
+              renderItem={itemData => {
+                return (
+                  <GoalItem
+                    text={itemData.item.text}
+                    onDeleteItem={deleteGoalHandler}
+                    id={itemData.item.id}
+                  />
+                );
+              }}
+              keyExtractor={(item, index) => {
+                return item.id;
+              }}
+            />
+          </View>
+        )}
       </View>
     </>
   );
@@ -77,5 +88,19 @@ const styles = StyleSheet.create({
 
   goalsContainer: {
     flex: 5,
+  },
+  empty: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emptyimg: {
+    width: 300,
+    height: 300,
+  },
+  emptyText: {
+    fontSize: 30,
+    marginBottom: 20,
+    color: 'midnightblue',
   },
 });
